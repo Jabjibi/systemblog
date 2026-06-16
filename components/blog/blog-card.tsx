@@ -1,25 +1,22 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowRight, CalendarDays } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+import { ArrowRight } from 'lucide-react'
+import { BLOG_CATEGORY_MAP, DEFAULT_CATEGORY } from '@/lib/config/blog-categories'
 import { type Blog } from '@/lib/mock/blogs'
 
-type BlogCardProps = Pick<Blog, 'slug' | 'title' | 'excerpt' | 'cover_image_url' | 'published_at'>
-
-function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString('th-TH', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
+type BlogCardProps = Pick<Blog, 'slug' | 'title' | 'excerpt' | 'cover_image_url'> & {
+  excerptVariant?: 'light' | 'dark'
 }
 
-export function BlogCard({ slug, title, excerpt, cover_image_url, published_at }: BlogCardProps) {
+export function BlogCard({ slug, title, excerpt, cover_image_url, excerptVariant = 'dark' }: BlogCardProps) {
+  const category = BLOG_CATEGORY_MAP[slug] ?? DEFAULT_CATEGORY
+  const Icon = category.icon
+
   return (
-    <Card className="group overflow-hidden border hover:shadow-lg transition-shadow duration-300 flex flex-col h-full p-0">
-      {/* Cover Image */}
-      <div className="relative w-full aspect-[16/9] overflow-hidden">
+    <div className="group rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col bg-hero-bg">
+
+      {/* 1. Cover Image — fixed height */}
+      <div className="relative w-full h-44 overflow-hidden">
         <Image
           src={cover_image_url}
           alt={title}
@@ -29,29 +26,43 @@ export function BlogCard({ slug, title, excerpt, cover_image_url, published_at }
         />
       </div>
 
-      {/* Info Bar */}
-      <div className="bg-primary px-4 py-3 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2 min-w-0">
-          <Badge variant="secondary" className="shrink-0 text-xs">บทความ</Badge>
-          <span className="text-primary-foreground text-sm font-semibold truncate">{title}</span>
+      {/* 2. Info Row — sits on lavender card bg */}
+      <div className="px-3 py-3 flex items-center gap-3">
+        <div className="w-10 h-10 bg-white rounded-lg shadow-sm flex items-center justify-center shrink-0">
+          <Icon className="w-5 h-5 text-gray-700" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-bold text-sm text-gray-900 truncate">{title}</p>
+          <p className="text-xs text-gray-400 mt-0.5">{category.sublabel}</p>
         </div>
         <Link
           href={`/blog/${slug}`}
-          className="shrink-0 w-7 h-7 rounded-full bg-primary-foreground/20 hover:bg-primary-foreground/40 flex items-center justify-center transition-colors"
+          className="w-8 h-8 rounded-full bg-card-arrow-bg flex items-center justify-center shrink-0 hover:opacity-80 transition-opacity"
           aria-label={`อ่าน ${title}`}
         >
-          <ArrowRight className="w-3.5 h-3.5 text-primary-foreground" />
+          <ArrowRight className="w-4 h-4 text-white" />
         </Link>
       </div>
 
-      {/* Body */}
-      <CardContent className="p-4 flex flex-col gap-3 flex-1">
-        <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3">{excerpt}</p>
-        <div className="mt-auto flex items-center gap-1.5 text-xs text-muted-foreground">
-          <CalendarDays className="w-3.5 h-3.5" />
-          <time dateTime={published_at}>{formatDate(published_at)}</time>
-        </div>
-      </CardContent>
-    </Card>
+      {/* 3. Excerpt — inset rounded box, สลับฟันปลา */}
+      <div
+        className={[
+          'mx-3 mb-3 rounded-xl px-3 py-3 flex-1',
+          excerptVariant === 'dark'
+            ? 'bg-card-dark-bg'
+            : 'bg-white border border-gray-100',
+        ].join(' ')}
+      >
+        <p
+          className={[
+            'text-xs leading-relaxed line-clamp-3',
+            excerptVariant === 'dark' ? 'text-white/90' : 'text-gray-700',
+          ].join(' ')}
+        >
+          {excerpt}
+        </p>
+      </div>
+
+    </div>
   )
 }

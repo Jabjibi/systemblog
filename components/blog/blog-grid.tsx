@@ -19,14 +19,14 @@ export function BlogGrid({ blogs, query }: BlogGridProps) {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {blogs.map((blog) => (
+      {blogs.map((blog, index) => (
         <BlogCard
           key={blog.id}
           slug={blog.slug}
           title={blog.title}
           excerpt={blog.excerpt}
           cover_image_url={blog.cover_image_url}
-          published_at={blog.published_at}
+          excerptVariant={index % 2 === 0 ? 'light' : 'dark'}
         />
       ))}
     </div>
