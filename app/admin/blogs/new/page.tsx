@@ -5,7 +5,7 @@ export default function AdminBlogNewPage() {
   return (
     <div className="flex h-screen overflow-hidden">
       <AdminSidebar />
-      <main className="flex-1 bg-[#F0EFF8] p-6 flex flex-col gap-6 overflow-y-auto">
+      <main className="flex-1 bg-[#F0EFF8] p-6 flex flex-col gap-6 overflow-hidden">
         <div>
           <h1 className="text-2xl font-bold text-foreground">สร้างบทความใหม่</h1>
           <p className="text-sm text-muted-foreground mt-1">กรอกข้อมูลแล้วกดบันทึก</p>

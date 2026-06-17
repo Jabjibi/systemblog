@@ -29,6 +29,7 @@ export function useContentEditor(value: string, onChange: (v: string) => void) {
   const [menuOpen, setMenuOpen] = useState(false)
   const textareaRefs = useRef<Record<string, HTMLTextAreaElement | null>>({})
   const lastEmittedRef = useRef(value)
+  const pendingInsertAfterRef = useRef<string | null>(null)
 
   // Sync external value changes (e.g. loading edit form) without triggering our own onChange
   useEffect(() => {
@@ -129,11 +130,17 @@ export function useContentEditor(value: string, onChange: (v: string) => void) {
     })
   }, [])
 
+  const openImagePicker = useCallback(() => {
+    pendingInsertAfterRef.current = focusedId
+    fileRef.current?.click()
+  }, [focusedId])
+
   const { status: uploadStatus, inputRef: fileRef, onInputChange } = useImageUpload((url) => {
     const imageBlock: ImageBlock = { id: mkId(), type: 'image', url }
     const afterBlock: TextBlock = { id: mkId(), type: 'text', content: '' }
     setBlocks(prev => {
-      const idx = focusedId ? prev.findIndex(b => b.id === focusedId) : prev.length - 1
+      const savedId = pendingInsertAfterRef.current
+      const idx = savedId ? prev.findIndex(b => b.id === savedId) : prev.length - 1
       const insertAfter = idx >= 0 ? idx : prev.length - 1
       return [
         ...prev.slice(0, insertAfter + 1),
@@ -155,7 +162,7 @@ export function useContentEditor(value: string, onChange: (v: string) => void) {
     updateText,
     handleKeyDown,
     deleteBlock,
-    uploadStatus, fileRef, onInputChange,
+    uploadStatus, fileRef, onInputChange, openImagePicker,
     applyFormat,
   }
 }

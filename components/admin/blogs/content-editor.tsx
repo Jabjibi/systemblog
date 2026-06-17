@@ -19,7 +19,7 @@ export function ContentEditor({ value, onChange }: Props) {
     menuOpen, setMenuOpen,
     textareaRefs,
     updateText, handleKeyDown, deleteBlock,
-    uploadStatus, fileRef, onInputChange,
+    uploadStatus, fileRef, onInputChange, openImagePicker,
     applyFormat,
   } = useContentEditor(value, onChange)
 
@@ -44,6 +44,7 @@ export function ContentEditor({ value, onChange }: Props) {
           <List className="w-3.5 h-3.5" />
         </button>
       </div>
+
       {blocks.map((block, index) => (
         <div key={block.id} className="relative group">
           {focusedId === block.id && block.type === 'text' && (
@@ -51,7 +52,7 @@ export function ContentEditor({ value, onChange }: Props) {
               <div className="relative">
                 <button
                   type="button"
-                  onClick={() => setMenuOpen(p => !p)}
+                  onMouseDown={(e) => { e.preventDefault(); setMenuOpen(p => !p) }}
                   className="w-7 h-7 rounded-full border border-gray-300 bg-white flex items-center justify-center hover:border-gray-400 hover:shadow-sm transition-all"
                   title="เพิ่มเนื้อหา"
                 >
@@ -63,7 +64,7 @@ export function ContentEditor({ value, onChange }: Props) {
                     <p className="px-3 py-1.5 text-xs text-muted-foreground font-medium">เพิ่มเนื้อหา</p>
                     <button
                       type="button"
-                      onClick={() => fileRef.current?.click()}
+                      onMouseDown={(e) => { e.preventDefault(); openImagePicker() }}
                       disabled={uploadStatus === 'uploading'}
                       className="flex items-center gap-2.5 px-3 py-2 hover:bg-gray-50 w-full text-sm text-left text-gray-700 disabled:opacity-50"
                     >
@@ -84,10 +85,7 @@ export function ContentEditor({ value, onChange }: Props) {
               }}
               value={block.content}
               placeholder={index === 0 ? 'เริ่มเขียนบทความที่นี่...' : ''}
-              onChange={(e) => {
-                updateText(block.id, e.target.value)
-                autoResize(e.target)
-              }}
+              onChange={(e) => { updateText(block.id, e.target.value); autoResize(e.target) }}
               onKeyDown={(e) => handleKeyDown(block.id, e)}
               onFocus={() => { setFocusedId(block.id); setMenuOpen(false) }}
               onBlur={() => setFocusedId(null)}

@@ -19,20 +19,22 @@ export function BlogForm() {
     <form onSubmit={submit} className="flex gap-6 flex-1 min-h-0">
 
       {/* Left: writing area */}
-      <div className="flex-1 min-w-0 bg-white rounded-2xl border border-gray-100 p-8 flex flex-col gap-6 overflow-y-auto">
+      <div className="flex-1 min-w-0 bg-white rounded-2xl border border-gray-100 p-8 flex flex-col gap-6 overflow-hidden">
         <textarea
           value={form.title}
           onChange={(e) => setField('title', e.target.value)}
           placeholder="ชื่อบทความ"
           required
           rows={2}
-          className="w-full text-3xl font-bold outline-none resize-none bg-transparent placeholder:text-gray-200 leading-tight"
+          className="w-full text-3xl font-bold outline-none resize-none bg-transparent placeholder:text-gray-200 leading-tight shrink-0"
         />
-        <hr className="border-gray-100" />
-        <ContentEditor
-          value={form.content}
-          onChange={(v) => setField('content', v)}
-        />
+        <hr className="border-gray-100 shrink-0" />
+        <div className="flex-1 overflow-y-auto min-h-0">
+          <ContentEditor
+            value={form.content}
+            onChange={(v) => setField('content', v)}
+          />
+        </div>
       </div>
 
       {/* Right: metadata panel */}
@@ -49,7 +51,7 @@ export function BlogForm() {
             <input
               type="text"
               value={form.slug}
-              onChange={(e) => setField('slug', e.target.value.toLowerCase())}
+              onChange={(e) => setField('slug', e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
               placeholder="my-blog-post"
               required
               className="px-3 py-2 rounded-lg border border-gray-200 text-sm font-mono outline-none focus:border-purple-400 transition-colors"
