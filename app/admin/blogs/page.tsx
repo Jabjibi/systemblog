@@ -5,9 +5,9 @@ import { BlogTable } from '@/components/admin/blogs/blog-table'
 
 export default function AdminBlogsPage() {
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex min-h-screen">
       <AdminSidebar />
-      <main className="flex-1 bg-[#F0EFF8] p-6 flex flex-col gap-6 overflow-y-auto">
+      <main className="flex-1 bg-[#F0EFF8] p-6 flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-foreground">บทความ</h1>
