@@ -12,6 +12,9 @@ export function BlogForm() {
     return <p className="text-sm text-muted-foreground">กำลังโหลดข้อมูล...</p>
   }
 
+  const contentImageCount = (form.content.match(/^!\[.*?\]\(.*?\)$/gm) ?? []).length
+  const maxAdditional = Math.max(0, 7 - (form.cover_image_url ? 1 : 0) - contentImageCount)
+
   return (
     <form onSubmit={submit} className="flex gap-6 flex-1 min-h-0">
 
@@ -66,6 +69,7 @@ export function BlogForm() {
 
           <AdditionalImages
             images={form.additional_images}
+            max={maxAdditional}
             onChange={(urls) => setField('additional_images', urls)}
           />
 

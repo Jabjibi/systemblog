@@ -2,20 +2,31 @@
 
 import { Plus, X } from 'lucide-react'
 import { useImageUpload } from '@/lib/hooks/use-image-upload'
+import { Progress as ProgressPrimitive } from '@base-ui/react/progress'
+import { ProgressTrack, ProgressIndicator } from '@/components/ui/progress'
 
 type Props = {
   images: string[]
+  max: number
   onChange: (urls: string[]) => void
 }
 
-export function AdditionalImages({ images, onChange }: Props) {
+export function AdditionalImages({ images, max, onChange }: Props) {
   const { status, inputRef, onInputChange } = useImageUpload((url) => onChange([...images, url]))
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-        รูปเพิ่มเติม <span className="normal-case font-normal">({images.length}/6)</span>
-      </p>
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">รูปเพิ่มเติม</p>
+        <span className="text-xs text-muted-foreground">{images.length}/{max}</span>
+      </div>
+      <ProgressPrimitive.Root value={max === 0 ? 100 : (images.length / max) * 100} max={100}>
+        <ProgressTrack className="h-1.5">
+          <ProgressIndicator
+            className={images.length >= max ? 'bg-red-500' : 'bg-purple-500'}
+          />
+        </ProgressTrack>
+      </ProgressPrimitive.Root>
       <div className="grid grid-cols-3 gap-2">
         {images.map((url, i) => (
           <div key={i} className="relative aspect-video rounded-lg overflow-hidden border border-gray-100 group">
@@ -30,7 +41,7 @@ export function AdditionalImages({ images, onChange }: Props) {
             </button>
           </div>
         ))}
-        {images.length < 6 && (
+        {images.length < max && (
           <button
             type="button"
             onClick={() => inputRef.current?.click()}
