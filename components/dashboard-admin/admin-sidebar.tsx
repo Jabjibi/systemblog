@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { BookOpen, LayoutDashboard, MessageSquare, LogOut } from 'lucide-react'
 import { useAdminNav } from '@/lib/hooks/use-admin-nav'
+import { useLogout } from '@/lib/hooks/use-logout'
 
 const NAV_ITEMS = [
   { label: 'Dashboard', href: '/admin/panel', icon: LayoutDashboard },
@@ -12,6 +13,7 @@ const NAV_ITEMS = [
 
 export function AdminSidebar() {
   const { isActive } = useAdminNav()
+  const { logout, loading } = useLogout()
 
   return (
     <aside className="w-64 min-h-screen flex flex-col bg-brand-bar-bg text-brand-bar-text shrink-0">
@@ -39,9 +41,13 @@ export function AdminSidebar() {
       </nav>
 
       <div className="px-4 pb-6 border-t border-white/10 pt-4">
-        <button className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-white/60 hover:text-white hover:bg-white/10 w-full transition-colors">
+        <button
+          onClick={logout}
+          disabled={loading}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-white/60 hover:text-white hover:bg-white/10 w-full transition-colors disabled:opacity-50"
+        >
           <LogOut className="w-4 h-4" />
-          ออกจากระบบ
+          {loading ? 'กำลังออก...' : 'ออกจากระบบ'}
         </button>
       </div>
     </aside>
