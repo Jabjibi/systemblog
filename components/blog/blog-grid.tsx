@@ -1,9 +1,8 @@
-import { type Blog } from '@/lib/mock/blogs'
 import { BlogCard } from './blog-card'
 import { EmptyState } from '@/components/shared/empty-state'
 
 type BlogGridProps = {
-  blogs: Blog[]
+  blogs: { id: string; slug: string; title: string; excerpt: string; cover_image_url: string | null }[]
   query: string
 }
 
@@ -25,7 +24,7 @@ export function BlogGrid({ blogs, query }: BlogGridProps) {
           slug={blog.slug}
           title={blog.title}
           excerpt={blog.excerpt}
-          cover_image_url={blog.cover_image_url}
+          cover_image_url={blog.cover_image_url ?? ''}
           excerptVariant={index % 2 === 0 ? 'light' : 'dark'}
         />
       ))}

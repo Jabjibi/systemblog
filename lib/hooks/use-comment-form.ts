@@ -15,7 +15,7 @@ type ErrorState = {
   submit?: string
 }
 
-export function useCommentForm(_blogId: string) {
+export function useCommentForm(slug: string) {
   const [form, setForm] = useState<FormState>({ sender_name: '', message: '' })
   const [errors, setErrors] = useState<ErrorState>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -47,8 +47,16 @@ export function useCommentForm(_blogId: string) {
     if (!validate()) return
     setIsSubmitting(true)
     try {
-      // TODO: replace with real API call
-      await new Promise((resolve) => setTimeout(resolve, 800))
+      const res = await fetch(`/api/blogs/${slug}/comments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      })
+      if (!res.ok) {
+        const data = await res.json()
+        setErrors({ submit: data.message ?? 'เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง' })
+        return
+      }
       setIsSuccess(true)
       setForm({ sender_name: '', message: '' })
     } catch {
@@ -56,7 +64,7 @@ export function useCommentForm(_blogId: string) {
     } finally {
       setIsSubmitting(false)
     }
-  }, [validate])
+  }, [form, slug, validate])
 
   const reset = useCallback(() => {
     setIsSuccess(false)

@@ -6,12 +6,12 @@ import { Input } from '@/components/ui/input'
 import { useCommentForm } from '@/lib/hooks/use-comment-form'
 
 type CommentFormProps = {
-  blogId: string
+  slug: string
 }
 
-export function CommentForm({ blogId }: CommentFormProps) {
+export function CommentForm({ slug }: CommentFormProps) {
   const { form, errors, isSubmitting, isSuccess, setField, submit, reset } =
-    useCommentForm(blogId)
+    useCommentForm(slug)
 
   if (isSuccess) {
     return (

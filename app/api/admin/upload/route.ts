@@ -19,7 +19,10 @@ export async function POST(request: Request) {
     .from('blog-images')
     .upload(filename, buffer, { contentType: file.type, upsert: false })
 
-  if (error) return NextResponse.json({ message: error.message }, { status: 500 })
+  if (error) {
+    console.error('[upload] Supabase Storage error:', error)
+    return NextResponse.json({ message: error.message }, { status: 500 })
+  }
 
   const { data } = supabaseAdmin.storage.from('blog-images').getPublicUrl(filename)
 

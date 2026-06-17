@@ -1,13 +1,17 @@
 import { MessageSquare } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
-import { type Comment } from '@/lib/mock/blogs'
 import { CommentItem } from './comment-item'
 
-type CommentListProps = {
-  comments: Comment[]
+type Comment = {
+  id: string
+  sender_name: string
+  message: string
+  created_at: string
 }
 
-export function CommentList({ comments }: CommentListProps) {
+type Props = { comments: Comment[] }
+
+export function CommentList({ comments }: Props) {
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-2">

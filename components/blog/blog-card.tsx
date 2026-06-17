@@ -2,9 +2,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 import { BLOG_CATEGORY_MAP, DEFAULT_CATEGORY } from '@/lib/config/blog-categories'
-import { type Blog } from '@/lib/mock/blogs'
 
-type BlogCardProps = Pick<Blog, 'slug' | 'title' | 'excerpt' | 'cover_image_url'> & {
+type BlogCardProps = {
+  slug: string
+  title: string
+  excerpt: string
+  cover_image_url: string
   excerptVariant?: 'light' | 'dark'
 }
 
@@ -15,18 +18,22 @@ export function BlogCard({ slug, title, excerpt, cover_image_url, excerptVariant
   return (
     <div className="group rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col bg-hero-bg">
 
-      {/* 1. Cover Image — fixed height */}
       <div className="relative w-full h-44 overflow-hidden">
-        <Image
-          src={cover_image_url}
-          alt={title}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        />
+        {cover_image_url ? (
+          <Image
+            src={cover_image_url}
+            alt={title}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        ) : (
+          <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+            <Icon className="w-10 h-10 text-gray-300" />
+          </div>
+        )}
       </div>
 
-      {/* 2. Info Row — sits on lavender card bg */}
       <div className="px-3 py-3 flex items-center gap-3">
         <div className="w-10 h-10 bg-white rounded-lg shadow-sm flex items-center justify-center shrink-0">
           <Icon className="w-5 h-5 text-gray-700" />
@@ -44,13 +51,10 @@ export function BlogCard({ slug, title, excerpt, cover_image_url, excerptVariant
         </Link>
       </div>
 
-      {/* 3. Excerpt — inset rounded box, สลับฟันปลา */}
       <div
         className={[
           'mx-3 mb-3 rounded-xl px-3 py-3 flex-1',
-          excerptVariant === 'dark'
-            ? 'bg-card-dark-bg'
-            : 'bg-white border border-gray-100',
+          excerptVariant === 'dark' ? 'bg-card-dark-bg' : 'bg-white border border-gray-100',
         ].join(' ')}
       >
         <p
@@ -62,7 +66,6 @@ export function BlogCard({ slug, title, excerpt, cover_image_url, excerptVariant
           {excerpt}
         </p>
       </div>
-
     </div>
   )
 }

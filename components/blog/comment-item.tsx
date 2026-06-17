@@ -1,7 +1,6 @@
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { type Comment } from '@/lib/mock/blogs'
 
-type CommentItemProps = Pick<Comment, 'sender_name' | 'message' | 'created_at'>
+type CommentItemProps = { sender_name: string; message: string; created_at: string }
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString('th-TH', {
