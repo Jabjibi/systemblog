@@ -33,6 +33,7 @@ export function BlogForm() {
           <ContentEditor
             value={form.content}
             onChange={(v) => setField('content', v)}
+            maxImagesReached={imageCount >= 7}
           />
         </div>
       </div>

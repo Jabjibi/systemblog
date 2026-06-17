@@ -1,168 +1,157 @@
 'use client'
 
-import { useRef, useState, useCallback, useEffect } from 'react'
+import { useRef, useState, useCallback } from 'react'
 import { useImageUpload } from '@/lib/hooks/use-image-upload'
 
-export type TextBlock = { id: string; type: 'text'; content: string }
-export type ImageBlock = { id: string; type: 'image'; url: string }
-export type Block = TextBlock | ImageBlock
+export type TextSegment = { type: 'text'; value: string }
+export type ImageSegment = { type: 'image'; url: string }
+export type Segment = TextSegment | ImageSegment
 
-function mkId() { return Math.random().toString(36).slice(2) + Date.now() }
+export type CursorState = {
+  segmentIdx: number
+  cursorY: number
+  isEmptyLine: boolean
+} | null
 
-function blocksToMarkdown(blocks: Block[]): string {
-  return blocks.map(b => b.type === 'image' ? `![](${b.url})` : b.content).join('\n')
+function getCursorY(ta: HTMLTextAreaElement, cursorPos: number): number {
+  const style = window.getComputedStyle(ta)
+  const mirror = document.createElement('div')
+
+  mirror.style.cssText = `
+    position: absolute;
+    visibility: hidden;
+    overflow: hidden;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    width: ${ta.clientWidth}px;
+    font: ${style.font};
+    font-size: ${style.fontSize};
+    font-family: ${style.fontFamily};
+    font-weight: ${style.fontWeight};
+    line-height: ${style.lineHeight};
+    letter-spacing: ${style.letterSpacing};
+    padding: ${style.padding};
+    border: ${style.border};
+    box-sizing: ${style.boxSizing};
+  `
+
+  const textBefore = ta.value.slice(0, cursorPos)
+  mirror.textContent = textBefore
+
+  const caret = document.createElement('span')
+  caret.textContent = '​'
+  mirror.appendChild(caret)
+
+  document.body.appendChild(mirror)
+  const y = caret.offsetTop
+  document.body.removeChild(mirror)
+
+  return y
 }
 
-function markdownToBlocks(md: string): Block[] {
-  if (!md) return [{ id: mkId(), type: 'text', content: '' }]
-  const lines = md.split('\n')
-  return lines.map(line => {
-    const match = line.match(/^!\[.*?\]\((.*?)\)$/)
-    if (match) return { id: mkId(), type: 'image', url: match[1] }
-    return { id: mkId(), type: 'text', content: line }
-  })
+export function parseSegments(content: string): Segment[] {
+  const lines = (content ?? '').split('\n')
+  const result: Segment[] = []
+  let textLines: string[] = []
+
+  for (const line of lines) {
+    const m = line.match(/^!\[.*?\]\((.*?)\)$/)
+    if (m) {
+      result.push({ type: 'text', value: textLines.join('\n') })
+      textLines = []
+      result.push({ type: 'image', url: m[1] })
+    } else {
+      textLines.push(line)
+    }
+  }
+  result.push({ type: 'text', value: textLines.join('\n') })
+  return result
+}
+
+export function segmentsToMarkdown(segments: Segment[]): string {
+  return segments
+    .map(s => s.type === 'image' ? `![](${s.url})` : s.value)
+    .filter((p, i, arr) => !(p === '' && (i === 0 || i === arr.length - 1)))
+    .join('\n')
 }
 
 export function useContentEditor(value: string, onChange: (v: string) => void) {
-  const [blocks, setBlocks] = useState<Block[]>(() => markdownToBlocks(value))
-  const [focusedId, setFocusedId] = useState<string | null>(null)
-  const [menuOpen, setMenuOpen] = useState(false)
-  const textareaRefs = useRef<Record<string, HTMLTextAreaElement | null>>({})
-  const lastEmittedRef = useRef(value)
-  const pendingInsertAfterRef = useRef<string | null>(null)
+  const [focusedIdx, setFocusedIdx] = useState<number | null>(null)
+  const [cursorState, setCursorState] = useState<CursorState>(null)
+  const textareaRefs = useRef<Record<number, HTMLTextAreaElement | null>>({})
 
-  // Sync external value changes (e.g. loading edit form) without triggering our own onChange
-  useEffect(() => {
-    if (value !== lastEmittedRef.current) {
-      setBlocks(markdownToBlocks(value))
-      lastEmittedRef.current = value
-    }
-  }, [value])
+  const segments = parseSegments(value)
 
-  // Emit markdown to parent whenever blocks change — avoids calling onChange inside setState updater
-  useEffect(() => {
-    const md = blocksToMarkdown(blocks)
-    if (md !== lastEmittedRef.current) {
-      lastEmittedRef.current = md
-      onChange(md)
-    }
-  }, [blocks, onChange])
-
-  const updateText = useCallback((id: string, content: string) => {
-    setBlocks(prev => prev.map(b => b.id === id ? { ...(b as TextBlock), content } : b))
+  const updateCursor = useCallback((segmentIdx: number, ta: HTMLTextAreaElement, val: string) => {
+    const pos = ta.selectionStart
+    const before = val.slice(0, pos)
+    const lineStart = before.lastIndexOf('\n') + 1
+    const lineEnd = val.indexOf('\n', pos)
+    const lineContent = val.slice(lineStart, lineEnd === -1 ? undefined : lineEnd)
+    const cursorY = getCursorY(ta, pos)
+    setCursorState({ segmentIdx, cursorY, isEmptyLine: lineContent.trim() === '' })
   }, [])
 
-  const applyFormat = useCallback((type: 'bold' | 'bullet') => {
-    const id = focusedId
-    if (!id) return
-    const ta = textareaRefs.current[id]
-    if (!ta) return
+  function updateTextSegment(segIdx: number, newValue: string) {
+    const updated = segments.map((s, i) => i === segIdx ? { ...s as TextSegment, value: newValue } : s)
+    onChange(segmentsToMarkdown(updated))
+  }
 
+  function deleteImageSegment(segIdx: number) {
+    onChange(segmentsToMarkdown(segments.filter((_, i) => i !== segIdx)))
+  }
+
+  function applyFormat(type: 'bold' | 'bullet') {
+    const idx = focusedIdx
+    if (idx === null) return
+    const ta = textareaRefs.current[idx]
+    if (!ta) return
+    const seg = segments[idx]
+    if (seg?.type !== 'text') return
+    const val = seg.value
     const start = ta.selectionStart
     const end = ta.selectionEnd
-    const val = ta.value
 
     if (type === 'bold') {
       const selected = val.slice(start, end)
-      const newVal = val.slice(0, start) + `**${selected}**` + val.slice(end)
-      updateText(id, newVal)
-      setTimeout(() => {
-        ta.focus()
-        ta.selectionStart = start + 2
-        ta.selectionEnd = end + 2
-      }, 0)
-    } else if (type === 'bullet') {
+      updateTextSegment(idx, val.slice(0, start) + `**${selected}**` + val.slice(end))
+      setTimeout(() => { ta.focus(); ta.selectionStart = start + 2; ta.selectionEnd = end + 2 }, 0)
+    } else {
       const lineStart = val.lastIndexOf('\n', start - 1) + 1
       const hasBullet = val.slice(lineStart).startsWith('- ')
-      const newVal = hasBullet
+      updateTextSegment(idx, hasBullet
         ? val.slice(0, lineStart) + val.slice(lineStart + 2)
         : val.slice(0, lineStart) + '- ' + val.slice(lineStart)
-      updateText(id, newVal)
+      )
       setTimeout(() => ta.focus(), 0)
     }
-  }, [focusedId, updateText])
-
-  const handleKeyDown = useCallback((id: string, e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === 'b') {
-      e.preventDefault()
-      applyFormat('bold')
-      return
-    }
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      const cursorPos = e.currentTarget.selectionStart
-      const fullContent = e.currentTarget.value
-      const beforeCursor = fullContent.slice(0, cursorPos)
-      const afterCursor = fullContent.slice(cursorPos)
-      const newBlock: TextBlock = { id: mkId(), type: 'text', content: afterCursor }
-      setBlocks(prev => {
-        const idx = prev.findIndex(b => b.id === id)
-        const next = prev.map(b => b.id === id ? { ...(b as TextBlock), content: beforeCursor } : b)
-        return [...next.slice(0, idx + 1), newBlock, ...next.slice(idx + 1)]
-      })
-      setTimeout(() => textareaRefs.current[newBlock.id]?.focus(), 0)
-    } else if (e.key === 'Backspace') {
-      setBlocks(prev => {
-        const block = prev.find(b => b.id === id) as TextBlock | undefined
-        if (!block || block.content !== '' || prev.length <= 1) return prev
-        e.preventDefault()
-        const idx = prev.findIndex(b => b.id === id)
-        const next = prev.filter(b => b.id !== id)
-        const target = prev[idx - 1] ?? prev[idx + 1]
-        if (target?.type === 'text') {
-          setTimeout(() => textareaRefs.current[target.id]?.focus(), 0)
-        }
-        return next
-      })
-    }
-  }, [applyFormat])
-
-  const deleteBlock = useCallback((id: string) => {
-    setBlocks(prev => {
-      if (prev.length <= 1) return prev
-      const idx = prev.findIndex(b => b.id === id)
-      const next = prev.filter(b => b.id !== id)
-      const target = prev[idx - 1] ?? prev[idx + 1]
-      if (target?.type === 'text') {
-        setTimeout(() => textareaRefs.current[target.id]?.focus(), 0)
-      }
-      return next
-    })
-  }, [])
-
-  const openImagePicker = useCallback(() => {
-    pendingInsertAfterRef.current = focusedId
-    fileRef.current?.click()
-  }, [focusedId])
+  }
 
   const { status: uploadStatus, inputRef: fileRef, onInputChange } = useImageUpload((url) => {
-    const imageBlock: ImageBlock = { id: mkId(), type: 'image', url }
-    const afterBlock: TextBlock = { id: mkId(), type: 'text', content: '' }
-    setBlocks(prev => {
-      const savedId = pendingInsertAfterRef.current
-      const idx = savedId ? prev.findIndex(b => b.id === savedId) : prev.length - 1
-      const insertAfter = idx >= 0 ? idx : prev.length - 1
-      return [
-        ...prev.slice(0, insertAfter + 1),
-        imageBlock,
-        afterBlock,
-        ...prev.slice(insertAfter + 1),
-      ]
-    })
-    setMenuOpen(false)
-    setFocusedId(afterBlock.id)
-    setTimeout(() => textareaRefs.current[afterBlock.id]?.focus(), 0)
+    const insertAfterIdx = focusedIdx !== null ? focusedIdx : segments.length - 1
+    const newSegments = [
+      ...segments.slice(0, insertAfterIdx + 1),
+      { type: 'image' as const, url },
+      { type: 'text' as const, value: '' },
+      ...segments.slice(insertAfterIdx + 1),
+    ]
+    onChange(segmentsToMarkdown(newSegments))
   })
 
+  const clearCursor = useCallback(() => setCursorState(null), [])
+
   return {
-    blocks,
-    focusedId, setFocusedId,
-    menuOpen, setMenuOpen,
+    segments,
+    setFocusedIdx,
+    cursorState,
+    updateCursor,
+    clearCursor,
     textareaRefs,
-    updateText,
-    handleKeyDown,
-    deleteBlock,
-    uploadStatus, fileRef, onInputChange, openImagePicker,
+    updateTextSegment,
+    deleteImageSegment,
     applyFormat,
+    uploadStatus,
+    fileRef, onInputChange,
+    openImagePicker: () => fileRef.current?.click(),
   }
 }
