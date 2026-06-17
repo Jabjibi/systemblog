@@ -31,12 +31,18 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 
   const { id } = await params
   const body = await request.json()
-  const { title, excerpt, content, cover_image_url, is_published, additional_images } = body
+  const { title, slug, excerpt, content, cover_image_url, is_published, additional_images } = body
+
+  if (slug) {
+    const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+    if (!slugRegex.test(slug)) return NextResponse.json({ message: 'รูปแบบ slug ไม่ถูกต้อง' }, { status: 400 })
+  }
 
   const { error } = await supabaseAdmin
     .from('blogs')
     .update({
       title,
+      ...(slug ? { slug } : {}),
       excerpt,
       content,
       cover_image_url: cover_image_url || null,

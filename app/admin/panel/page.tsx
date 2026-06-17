@@ -7,9 +7,9 @@ import { RecentCommentsTable } from '@/components/admin/dashboard/recent-comment
 
 export default function AdminPanelPage() {
   return (
-    <div className="flex min-h-screen">
+    <div className="flex h-screen overflow-hidden">
       <AdminSidebar />
-      <main className="flex-1 bg-[#F0EFF8] p-6 overflow-auto flex flex-col gap-5">
+      <main className="flex-1 bg-[#F0EFF8] p-6 overflow-y-auto flex flex-col gap-5">
         <AdminTopbar />
         <DashboardBanner />
         <QuickStatPills />

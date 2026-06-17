@@ -16,7 +16,7 @@ export function AdminSidebar() {
   const { logout, loading } = useLogout()
 
   return (
-    <aside className="w-64 min-h-screen flex flex-col bg-brand-bar-bg text-brand-bar-text shrink-0">
+    <aside className="w-64 h-screen sticky top-0 flex flex-col bg-brand-bar-bg text-brand-bar-text shrink-0 overflow-y-auto">
       <div className="flex items-center gap-2 font-bold text-lg px-6 py-6 border-b border-white/10">
         <BookOpen className="w-5 h-5" />
         <span>SystemBlog</span>
