@@ -1,5 +1,5 @@
-import { AdminSidebar } from '@/components/dashboard-admin/admin-sidebar'
-import { CommentTable } from '@/components/dashboard-admin/comment-table'
+import { AdminSidebar } from '@/components/admin/dashboard/sidebar'
+import { CommentTable } from '@/components/admin/comments/comment-table'
 
 export default function AdminCommentsPage() {
   return (

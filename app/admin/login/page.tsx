@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { BookOpen } from 'lucide-react'
-import { LoginForm } from '@/components/admin/login-form'
-import { DesertDunes } from '@/components/admin/desert-dunes'
+import { LoginForm } from '@/components/admin/login/login-form'
+import { DesertDunes } from '@/components/admin/login/desert-dunes'
 
 export default function AdminLoginPage() {
   return (

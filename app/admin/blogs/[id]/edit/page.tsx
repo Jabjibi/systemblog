@@ -1,6 +1,6 @@
-import { AdminSidebar } from '@/components/dashboard-admin/admin-sidebar'
-import { BlogForm } from '@/components/dashboard-admin/blog-form'
-import { SlugEditor } from '@/components/dashboard-admin/slug-editor'
+import { AdminSidebar } from '@/components/admin/dashboard/sidebar'
+import { BlogForm } from '@/components/admin/blogs/blog-form'
+import { SlugEditor } from '@/components/admin/blogs/slug-editor'
 
 export default async function AdminBlogEditPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

@@ -1,5 +1,5 @@
-import { AdminSidebar } from '@/components/dashboard-admin/admin-sidebar'
-import { BlogForm } from '@/components/dashboard-admin/blog-form'
+import { AdminSidebar } from '@/components/admin/dashboard/sidebar'
+import { BlogForm } from '@/components/admin/blogs/blog-form'
 
 export default function AdminBlogNewPage() {
   return (

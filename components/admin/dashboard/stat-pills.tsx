@@ -1,6 +1,8 @@
+'use client'
+
 import { FileText, CheckCircle, Clock } from 'lucide-react'
 import { type LucideIcon } from 'lucide-react'
-import { MOCK_BLOGS, MOCK_COMMENTS } from '@/lib/mock/blogs'
+import { useDashboardStats } from '@/lib/hooks/use-dashboard-stats'
 
 type StatPillProps = {
   label: string
@@ -25,15 +27,13 @@ function StatPill({ label, sub, icon: Icon, iconColor, iconBg }: StatPillProps) 
 }
 
 export function QuickStatPills() {
-  const total = MOCK_BLOGS.length
-  const published = MOCK_BLOGS.filter((b) => b.is_published).length
-  const pending = MOCK_COMMENTS.filter((c) => c.status === 'pending').length
+  const { stats } = useDashboardStats()
 
   return (
     <div className="flex gap-3">
-      <StatPill label={`${total} บทความ`} sub="ทั้งหมด" icon={FileText} iconColor="text-blue-600" iconBg="bg-blue-50" />
-      <StatPill label={`${published} บทความ`} sub="เผยแพร่แล้ว" icon={CheckCircle} iconColor="text-green-600" iconBg="bg-green-50" />
-      <StatPill label={`${pending} รายการ`} sub="รอ Approve" icon={Clock} iconColor="text-purple-600" iconBg="bg-purple-50" />
+      <StatPill label={`${stats.total} บทความ`} sub="ทั้งหมด" icon={FileText} iconColor="text-blue-600" iconBg="bg-blue-50" />
+      <StatPill label={`${stats.published} บทความ`} sub="เผยแพร่แล้ว" icon={CheckCircle} iconColor="text-green-600" iconBg="bg-green-50" />
+      <StatPill label={`${stats.pending} รายการ`} sub="รอ Approve" icon={Clock} iconColor="text-purple-600" iconBg="bg-purple-50" />
     </div>
   )
 }

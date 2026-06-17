@@ -1,9 +1,9 @@
-import { AdminSidebar } from '@/components/dashboard-admin/admin-sidebar'
-import { AdminTopbar } from '@/components/dashboard-admin/admin-topbar'
-import { DashboardBanner } from '@/components/dashboard-admin/dashboard-banner'
-import { QuickStatPills } from '@/components/dashboard-admin/quick-stat-pills'
-import { RecentBlogCards } from '@/components/dashboard-admin/recent-blog-cards'
-import { RecentCommentsTable } from '@/components/dashboard-admin/recent-comments-table'
+import { AdminSidebar } from '@/components/admin/dashboard/sidebar'
+import { AdminTopbar } from '@/components/admin/dashboard/topbar'
+import { DashboardBanner } from '@/components/admin/dashboard/banner'
+import { QuickStatPills } from '@/components/admin/dashboard/stat-pills'
+import { RecentBlogCards } from '@/components/admin/dashboard/recent-blog-cards'
+import { RecentCommentsTable } from '@/components/admin/dashboard/recent-comments-table'
 
 export default function AdminPanelPage() {
   return (

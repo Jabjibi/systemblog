@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Plus } from 'lucide-react'
-import { AdminSidebar } from '@/components/dashboard-admin/admin-sidebar'
-import { BlogTable } from '@/components/dashboard-admin/blog-table'
+import { AdminSidebar } from '@/components/admin/dashboard/sidebar'
+import { BlogTable } from '@/components/admin/blogs/blog-table'
 
 export default function AdminBlogsPage() {
   return (

@@ -1,6 +1,7 @@
 'use client'
 
 import { useBlogForm } from '@/lib/hooks/use-blog-form'
+import { ImageUpload } from '@/components/admin/blogs/image-upload'
 
 export function BlogForm() {
   const { form, setField, status, submit, isEdit } = useBlogForm()
@@ -22,16 +23,10 @@ export function BlogForm() {
           />
         </div>
 
-        <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-foreground">รูปปก (URL)</label>
-          <input
-            type="url"
-            value={form.cover_image_url}
-            onChange={(e) => setField('cover_image_url', e.target.value)}
-            placeholder="https://..."
-            className="px-4 py-2.5 rounded-xl border border-gray-200 text-sm outline-none focus:border-purple-400 transition-colors"
-          />
-        </div>
+        <ImageUpload
+          value={form.cover_image_url}
+          onChange={(url) => setField('cover_image_url', url)}
+        />
 
         <div className="flex flex-col gap-1.5">
           <label className="text-sm font-medium text-foreground">เนื้อหาย่อ (Excerpt)</label>
