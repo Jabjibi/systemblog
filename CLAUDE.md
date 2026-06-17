@@ -44,6 +44,41 @@ import { Button } from '@/components/ui/button'  // shadcn
 import { Search } from 'lucide-react'             // lucide
 ```
 
+## API Routes
+
+All API routes live inside `app/api/` and follow the endpoint list in `sql/api.md` exactly — one `route.ts` per URL path, folder structure mirrors the URL.
+
+**Structure:**
+```
+app/api/
+├── auth/
+│   ├── login/route.ts
+│   ├── logout/route.ts
+│   └── me/route.ts
+├── blogs/
+│   ├── route.ts                      ← GET (public list)
+│   └── [slug]/
+│       ├── route.ts                  ← GET (public detail)
+│       └── comments/route.ts         ← GET + POST (public comments)
+└── admin/
+    ├── blogs/
+    │   ├── route.ts                  ← GET + POST
+    │   └── [id]/
+    │       ├── route.ts              ← GET + PATCH + DELETE
+    │       ├── slug/route.ts         ← PATCH
+    │       └── publish/route.ts      ← PATCH
+    ├── comments/
+    │   ├── route.ts                  ← GET
+    │   └── [id]/status/route.ts      ← PATCH
+    └── sessions/
+        └── [id]/route.ts             ← DELETE
+```
+
+**Rules:**
+- ห้ามเพิ่ม endpoint ที่ไม่มีใน `sql/api.md`
+- Admin routes (`/api/admin/*`) ทุกตัวต้องเรียก `verifyAdminSession()` จาก `lib/auth.ts` ก่อนทำงาน ถ้า session ไม่ valid → return 401
+- Supabase client ฝั่ง server ใช้ `lib/supabase/admin.ts` (service_role key) เท่านั้น
+
 ## Reusable Components
 
 UI elements that appear more than once must be extracted into a shared component under `components/`. Never duplicate or inline the same UI in multiple pages.
