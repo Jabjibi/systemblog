@@ -42,5 +42,11 @@ export function useImageUpload(onChange: (url: string) => void) {
     if (file) handleFile(file)
   }
 
-  return { preview, status, inputRef, onInputChange, onDrop }
+  function reset() {
+    setPreview(null)
+    setStatus('idle')
+    if (inputRef.current) inputRef.current.value = ''
+  }
+
+  return { preview, status, inputRef, onInputChange, onDrop, reset }
 }

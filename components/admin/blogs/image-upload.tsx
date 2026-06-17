@@ -11,7 +11,7 @@ type Props = {
 }
 
 export function ImageUpload({ value, onChange, label = 'รูปปก' }: Props) {
-  const { preview, status, inputRef, onInputChange, onDrop } = useImageUpload(onChange)
+  const { preview, status, inputRef, onInputChange, onDrop, reset } = useImageUpload(onChange)
 
   const displaySrc = preview ?? (value || null)
 
@@ -21,7 +21,7 @@ export function ImageUpload({ value, onChange, label = 'รูปปก' }: Prop
 
   function clear() {
     onChange('')
-    if (inputRef.current) inputRef.current.value = ''
+    reset()
   }
 
   return (

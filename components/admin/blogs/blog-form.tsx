@@ -3,7 +3,7 @@
 import { useBlogForm } from '@/lib/hooks/use-blog-form'
 import { ImageUpload } from '@/components/admin/blogs/image-upload'
 import { ContentEditor } from '@/components/admin/blogs/content-editor'
-import { AdditionalImages } from '@/components/admin/blogs/additional-images'
+import { Progress } from '@/components/ui/progress'
 
 export function BlogForm() {
   const { form, setField, status, submit, isEdit } = useBlogForm()
@@ -12,8 +12,8 @@ export function BlogForm() {
     return <p className="text-sm text-muted-foreground">กำลังโหลดข้อมูล...</p>
   }
 
-  const contentImageCount = (form.content.match(/^!\[.*?\]\(.*?\)$/gm) ?? []).length
-  const maxAdditional = Math.max(0, 7 - (form.cover_image_url ? 1 : 0) - contentImageCount)
+  const imageCount = (form.cover_image_url ? 1 : 0) + (form.content.match(/^!\[.*?\]\(.*?\)$/gm) ?? []).length
+  const imagePct = (imageCount / 7) * 100
 
   return (
     <form onSubmit={submit} className="flex gap-6 flex-1 min-h-0">
@@ -67,11 +67,16 @@ export function BlogForm() {
             />
           </div>
 
-          <AdditionalImages
-            images={form.additional_images}
-            max={maxAdditional}
-            onChange={(urls) => setField('additional_images', urls)}
-          />
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">รูปภาพ</span>
+              <span className="text-xs text-muted-foreground">{imageCount}/7</span>
+            </div>
+            <Progress
+              value={imagePct}
+              indicatorClassName={imageCount >= 7 ? 'bg-red-500' : 'bg-purple-500'}
+            />
+          </div>
 
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-foreground">

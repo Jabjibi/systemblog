@@ -51,13 +51,53 @@ export function useContentEditor(value: string, onChange: (v: string) => void) {
     setBlocks(prev => prev.map(b => b.id === id ? { ...(b as TextBlock), content } : b))
   }, [])
 
+  const applyFormat = useCallback((type: 'bold' | 'bullet') => {
+    const id = focusedId
+    if (!id) return
+    const ta = textareaRefs.current[id]
+    if (!ta) return
+
+    const start = ta.selectionStart
+    const end = ta.selectionEnd
+    const val = ta.value
+
+    if (type === 'bold') {
+      const selected = val.slice(start, end)
+      const newVal = val.slice(0, start) + `**${selected}**` + val.slice(end)
+      updateText(id, newVal)
+      setTimeout(() => {
+        ta.focus()
+        ta.selectionStart = start + 2
+        ta.selectionEnd = end + 2
+      }, 0)
+    } else if (type === 'bullet') {
+      const lineStart = val.lastIndexOf('\n', start - 1) + 1
+      const hasBullet = val.slice(lineStart).startsWith('- ')
+      const newVal = hasBullet
+        ? val.slice(0, lineStart) + val.slice(lineStart + 2)
+        : val.slice(0, lineStart) + '- ' + val.slice(lineStart)
+      updateText(id, newVal)
+      setTimeout(() => ta.focus(), 0)
+    }
+  }, [focusedId, updateText])
+
   const handleKeyDown = useCallback((id: string, e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'b') {
+      e.preventDefault()
+      applyFormat('bold')
+      return
+    }
     if (e.key === 'Enter') {
       e.preventDefault()
-      const newBlock: TextBlock = { id: mkId(), type: 'text', content: '' }
+      const cursorPos = e.currentTarget.selectionStart
+      const fullContent = e.currentTarget.value
+      const beforeCursor = fullContent.slice(0, cursorPos)
+      const afterCursor = fullContent.slice(cursorPos)
+      const newBlock: TextBlock = { id: mkId(), type: 'text', content: afterCursor }
       setBlocks(prev => {
         const idx = prev.findIndex(b => b.id === id)
-        return [...prev.slice(0, idx + 1), newBlock, ...prev.slice(idx + 1)]
+        const next = prev.map(b => b.id === id ? { ...(b as TextBlock), content: beforeCursor } : b)
+        return [...next.slice(0, idx + 1), newBlock, ...next.slice(idx + 1)]
       })
       setTimeout(() => textareaRefs.current[newBlock.id]?.focus(), 0)
     } else if (e.key === 'Backspace') {
@@ -74,7 +114,7 @@ export function useContentEditor(value: string, onChange: (v: string) => void) {
         return next
       })
     }
-  }, [])
+  }, [applyFormat])
 
   const deleteBlock = useCallback((id: string) => {
     setBlocks(prev => {
@@ -116,5 +156,6 @@ export function useContentEditor(value: string, onChange: (v: string) => void) {
     handleKeyDown,
     deleteBlock,
     uploadStatus, fileRef, onInputChange,
+    applyFormat,
   }
 }

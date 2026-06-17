@@ -1,6 +1,6 @@
 'use client'
 
-import { ImageIcon, Plus, X } from 'lucide-react'
+import { Bold, ImageIcon, List, Plus, X } from 'lucide-react'
 import { useContentEditor } from '@/lib/hooks/use-content-editor'
 
 type Props = {
@@ -20,10 +20,30 @@ export function ContentEditor({ value, onChange }: Props) {
     textareaRefs,
     updateText, handleKeyDown, deleteBlock,
     uploadStatus, fileRef, onInputChange,
+    applyFormat,
   } = useContentEditor(value, onChange)
 
   return (
     <div className="relative pl-10">
+      {/* Formatting toolbar */}
+      <div className="flex items-center gap-1 mb-4 pb-3 border-b border-gray-100">
+        <button
+          type="button"
+          onMouseDown={(e) => { e.preventDefault(); applyFormat('bold') }}
+          className="w-7 h-7 rounded flex items-center justify-center text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors"
+          title="ตัวหนา (Cmd+B)"
+        >
+          <Bold className="w-3.5 h-3.5" />
+        </button>
+        <button
+          type="button"
+          onMouseDown={(e) => { e.preventDefault(); applyFormat('bullet') }}
+          className="w-7 h-7 rounded flex items-center justify-center text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors"
+          title="Bullet list"
+        >
+          <List className="w-3.5 h-3.5" />
+        </button>
+      </div>
       {blocks.map((block, index) => (
         <div key={block.id} className="relative group">
           {focusedId === block.id && block.type === 'text' && (
