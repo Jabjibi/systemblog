@@ -1,7 +1,16 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import type { Comment } from '@/lib/mock/blogs'
+
+type Comment = {
+  id: string
+  blog_id: string
+  sender_name: string
+  message: string
+  status: 'pending' | 'approved' | 'rejected'
+  created_at: string
+  blogs: { title: string; slug: string } | null
+}
 
 type Status = 'loading' | 'idle' | 'error'
 

@@ -20,6 +20,14 @@ export function CommentTable() {
   if (status === 'loading') return <p className="text-sm text-muted-foreground">กำลังโหลด...</p>
   if (status === 'error') return <p className="text-sm text-red-500">โหลดข้อมูลไม่สำเร็จ</p>
 
+  if (comments.length === 0) {
+    return (
+      <div className="bg-white rounded-2xl border border-gray-100 py-16 flex items-center justify-center">
+        <p className="text-sm text-muted-foreground">ยังไม่มีคอมเมนต์</p>
+      </div>
+    )
+  }
+
   return (
     <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
       <div className="overflow-x-auto">
@@ -28,7 +36,7 @@ export function CommentTable() {
             <tr className="border-b border-gray-100 text-left text-muted-foreground">
               <th className="px-6 py-3 font-medium">ผู้ส่ง</th>
               <th className="px-6 py-3 font-medium">ข้อความ</th>
-              <th className="px-6 py-3 font-medium">Blog</th>
+              <th className="px-6 py-3 font-medium">บทความ</th>
               <th className="px-6 py-3 font-medium">วันที่</th>
               <th className="px-6 py-3 font-medium">สถานะ</th>
               <th className="px-6 py-3 font-medium">Actions</th>
@@ -43,8 +51,8 @@ export function CommentTable() {
                 <td className="px-6 py-4 text-muted-foreground max-w-xs">
                   <span className="line-clamp-2">{comment.message}</span>
                 </td>
-                <td className="px-6 py-4 text-muted-foreground font-mono text-xs">
-                  {comment.blog_id}
+                <td className="px-6 py-4 text-muted-foreground max-w-[160px]">
+                  <span className="line-clamp-1 text-xs">{comment.blogs?.title ?? '—'}</span>
                 </td>
                 <td className="px-6 py-4 text-muted-foreground whitespace-nowrap">
                   {new Date(comment.created_at).toLocaleDateString('th-TH', {

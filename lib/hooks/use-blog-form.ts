@@ -10,6 +10,7 @@ type FormState = {
   content: string
   cover_image_url: string
   is_published: boolean
+  additional_images: string[]
 }
 
 const EMPTY: FormState = {
@@ -19,6 +20,7 @@ const EMPTY: FormState = {
   content: '',
   cover_image_url: '',
   is_published: false,
+  additional_images: [],
 }
 
 export function useBlogForm() {
@@ -42,6 +44,7 @@ export function useBlogForm() {
           content: data.content ?? '',
           cover_image_url: data.cover_image_url ?? '',
           is_published: data.is_published ?? false,
+          additional_images: (data.images ?? []).map((img: { image_url: string }) => img.image_url),
         })
         setStatus('idle')
       })
