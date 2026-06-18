@@ -1,11 +1,11 @@
-import { TrendingUp, BarChart3, ShieldCheck, Building2, Globe } from 'lucide-react'
+import { Brain, Cloud, Terminal, Globe, Code2 } from 'lucide-react'
 
 const BRANDS = [
-  { icon: TrendingUp, label: 'การเงิน' },
-  { icon: BarChart3, label: 'การลงทุน' },
-  { icon: ShieldCheck, label: 'ประกันภัย' },
-  { icon: Building2, label: 'ธุรกิจ' },
-  { icon: Globe, label: 'เศรษฐกิจ' },
+  { icon: Brain, label: 'AI & ML' },
+  { icon: Cloud, label: 'Cloud' },
+  { icon: Terminal, label: 'DevOps' },
+  { icon: Code2, label: 'Open Source' },
+  { icon: Globe, label: 'Web Dev' },
 ]
 
 export function BrandBar() {

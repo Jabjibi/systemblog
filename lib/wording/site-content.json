@@ -1,0 +1,33 @@
+{
+  "hero": {
+    "breadcrumb": {
+      "label": "หน้าหลัก",
+      "current": "บทความ"
+    },
+    "title": "บทความด้านเทคโนโลยีที่เราคัดสรรมาให้",
+    "description": "รวบรวมบทความคุณภาพด้าน AI, Cloud Computing, DevOps และเทคโนโลยีสมัยใหม่ อัปเดตสม่ำเสมอเพื่อให้คุณก้าวทันโลกเทคโนโลยี"
+  },
+  "footer": {
+    "brand": {
+      "name": "SystemBlog",
+      "description": "แหล่งรวมบทความและความรู้ด้านเทคโนโลยี AI, Cloud และ DevOps อัปเดตสม่ำเสมอ"
+    },
+    "quickLinks": [
+      { "label": "เงื่อนไขการใช้งาน", "href": "#" },
+      { "label": "นโยบายความเป็นส่วนตัว", "href": "#" },
+      { "label": "ติดต่อสนับสนุน", "href": "#" },
+      { "label": "ศูนย์ช่วยเหลือ", "href": "#" }
+    ],
+    "topics": [
+      { "label": "AI & Machine Learning", "href": "#" },
+      { "label": "Cloud Computing", "href": "#" },
+      { "label": "DevOps & CI/CD", "href": "#" },
+      { "label": "Open Source", "href": "#" }
+    ],
+    "subscribe": {
+      "heading": "เข้าร่วมกับเรา!",
+      "description": "รับข่าวสารและบทความใหม่ล่าสุดก่อนใคร สมัครได้เลยฟรี"
+    },
+    "copyright": "SystemBlog | Powered by SystemBlog"
+  }
+}

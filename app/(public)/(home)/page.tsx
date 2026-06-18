@@ -3,10 +3,11 @@ import { supabaseAdmin } from '@/lib/supabase/admin'
 import { HeroSection } from '@/components/shared/hero-section'
 import { BrandBar } from '@/components/shared/brand-bar'
 import { BlogListClient } from '@/components/blog/blog-list-client'
+import siteContent from '@/lib/wording/site-content.json'
 
 export const metadata = {
   title: 'บทความทั้งหมด | SystemBlog',
-  description: 'รวมบทความและความรู้ด้านการเงิน ธุรกิจ และการลงทุน',
+  description: siteContent.hero.description,
 }
 
 const PER_PAGE = 10
@@ -35,9 +36,9 @@ export default async function BlogListPage({
   return (
     <>
       <HeroSection
-        breadcrumb={{ label: 'หน้าหลัก', current: 'บทความ' }}
-        title="บทความที่เราได้จัดทำไว้"
-        description="รวบรวมบทความคุณภาพด้านการเงิน ธุรกิจ และการลงทุน อัปเดตสม่ำเสมอเพื่อให้คุณไม่พลาดทุกความเคลื่อนไหว"
+        breadcrumb={siteContent.hero.breadcrumb}
+        title={siteContent.hero.title}
+        description={siteContent.hero.description}
       />
       <div className="container mx-auto max-w-6xl px-4 py-12 space-y-8">
         <BrandBar />

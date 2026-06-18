@@ -1,36 +1,30 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SystemBlog
 
-## Getting Started
+ระบบบล็อกพร้อม Admin Panel สำหรับจัดการบทความและ Comment
 
-First, run the development server:
+## Stack
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Framework**: Next.js 16 (App Router) + TypeScriptหก
+- **Database / Storage / Auth**: Supabase
+- **Styling**: Tailwind CSS v4 + shadcn/ui
+- **Deploy**: Vercel
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Public**
+- Blog list พร้อม search และ pagination (10 รายการ/หน้า)
+- Blog detail พร้อมรูปปก, รูปเพิ่มเติม (สูงสุด 7 รูป/บทความ) และ view count
+- ระบบ comment แบบ anonymous — validate ภาษาไทย 3 ชั้น (frontend / API / database)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Admin**
+- Login ด้วย JWT เก็บใน httpOnly cookie
+- Blog CRUD พร้อม rich content editor (Markdown + inline image upload)
+- Publish / Unpublish และแก้ไข Slug แยกต่างหาก
+- อนุมัติ / ปฏิเสธ comment
 
-## Learn More
+## Deploy
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Push code ขึ้น GitHub
+2. Import project บน [Vercel](https://vercel.com)
+3. ตั้ง Environment Variables ทั้ง 4 ตัวใน Vercel Dashboard → Settings → Environment Variables
+4. Deploy

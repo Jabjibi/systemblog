@@ -1,15 +1,15 @@
 import {
   type LucideIcon,
-  Calculator,
-  Briefcase,
-  Wallet,
-  Users,
-  Rocket,
+  Brain,
+  Cloud,
+  Terminal,
+  Code2,
+  Globe,
+  Server,
+  Cpu,
+  Database,
   ShieldCheck,
-  BarChart3,
-  Leaf,
-  Laptop,
-  PiggyBank,
+  Layers,
 } from 'lucide-react'
 
 export type BlogCategory = {
@@ -19,20 +19,20 @@ export type BlogCategory = {
 }
 
 export const BLOG_CATEGORY_MAP: Record<string, BlogCategory> = {
-  'tax-management-for-sme':                  { label: 'การจัดการภาษี',  sublabel: 'Tax Planning',       icon: Calculator  },
-  'business-plan-for-growth':                { label: 'แผนธุรกิจ',       sublabel: 'Growth Strategies',  icon: Briefcase   },
-  'company-budget-management':               { label: 'งบประมาณบริษัท', sublabel: 'Book Keeping',        icon: Wallet      },
-  'financial-consultation-guide':            { label: 'ที่ปรึกษาการเงิน', sublabel: 'Loan Management',   icon: Users       },
-  'startup-funding-thailand':                { label: 'Startup Funding', sublabel: 'Growth Strategies',  icon: Rocket      },
-  'credible-investment-funds':               { label: 'กองทุนน่าเชื่อถือ', sublabel: 'Audit & Assurance', icon: ShieldCheck },
-  'financial-statement-analysis':            { label: 'งบการเงิน',       sublabel: 'Financial Analysis', icon: BarChart3   },
-  'esg-investing-guide':                     { label: 'ESG Investing',   sublabel: 'Sustainable Finance', icon: Leaf       },
-  'digital-transformation-traditional-business': { label: 'Digital Transformation', sublabel: 'Tech & Business', icon: Laptop },
-  'retirement-planning-age-30':              { label: 'วางแผนเกษียณ',   sublabel: 'Retirement Planning', icon: PiggyBank  },
+  'intro-to-machine-learning':        { label: 'Machine Learning',    sublabel: 'AI & ML',           icon: Brain      },
+  'getting-started-with-docker':      { label: 'Docker',              sublabel: 'Containers',        icon: Layers     },
+  'kubernetes-for-beginners':         { label: 'Kubernetes',          sublabel: 'Orchestration',     icon: Server     },
+  'cloud-computing-overview':         { label: 'Cloud Computing',     sublabel: 'Infrastructure',    icon: Cloud      },
+  'devops-ci-cd-pipeline':            { label: 'CI/CD Pipeline',      sublabel: 'DevOps',            icon: Terminal   },
+  'open-source-contribution-guide':   { label: 'Open Source',         sublabel: 'Community',         icon: Code2      },
+  'web-development-best-practices':   { label: 'Web Development',     sublabel: 'Frontend & Backend', icon: Globe     },
+  'database-design-patterns':         { label: 'Database Design',     sublabel: 'Data Engineering',  icon: Database   },
+  'cybersecurity-fundamentals':       { label: 'Cybersecurity',       sublabel: 'Security',          icon: ShieldCheck},
+  'ai-hardware-and-gpus':             { label: 'AI Hardware',         sublabel: 'GPU & Compute',     icon: Cpu        },
 }
 
 export const DEFAULT_CATEGORY: BlogCategory = {
   label: 'บทความ',
-  sublabel: 'General',
-  icon: Briefcase,
+  sublabel: 'Technology',
+  icon: Code2,
 }

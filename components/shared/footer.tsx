@@ -2,20 +2,9 @@ import Link from 'next/link'
 import { BookOpen, Globe, Mail, MessageCircle } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import { SubscribeForm } from './subscribe-form'
+import siteContent from '@/lib/wording/site-content.json'
 
-const QUICK_LINKS = [
-  { label: 'เงื่อนไขการใช้งาน', href: '#' },
-  { label: 'นโยบายความเป็นส่วนตัว', href: '#' },
-  { label: 'ติดต่อสนับสนุน', href: '#' },
-  { label: 'ศูนย์ช่วยเหลือ', href: '#' },
-]
-
-const SERVICES = [
-  { label: 'ที่ปรึกษา', href: '#' },
-  { label: 'การเงิน', href: '#' },
-  { label: 'วิเคราะห์ข้อมูล', href: '#' },
-  { label: 'ประกันภัย', href: '#' },
-]
+const { brand, quickLinks, topics, subscribe, copyright } = siteContent.footer
 
 const SOCIALS = [
   { Icon: Globe, href: '#', label: 'Website' },
@@ -35,10 +24,10 @@ export function Footer() {
           <div className="space-y-4">
             <div className="flex items-center gap-2 font-bold text-lg">
               <BookOpen className="w-5 h-5" />
-              <span>SystemBlog</span>
+              <span>{brand.name}</span>
             </div>
             <p className="text-sm text-white/60 leading-relaxed">
-              แหล่งรวมบทความและความรู้ด้านการเงิน ธุรกิจ และการลงทุน อัปเดตสม่ำเสมอ
+              {brand.description}
             </p>
             <div className="flex gap-2">
               {SOCIALS.map(({ Icon, href, label }) => (
@@ -58,7 +47,7 @@ export function Footer() {
           <div className="space-y-4">
             <h4 className="font-semibold">Quick Links</h4>
             <ul className="space-y-2.5">
-              {QUICK_LINKS.map(({ label, href }) => (
+              {quickLinks.map(({ label, href }) => (
                 <li key={label}>
                   <Link
                     href={href}
@@ -71,11 +60,11 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Services */}
+          {/* Topics */}
           <div className="space-y-4">
-            <h4 className="font-semibold">บริการ</h4>
+            <h4 className="font-semibold">หัวข้อ</h4>
             <ul className="space-y-2.5">
-              {SERVICES.map(({ label, href }) => (
+              {topics.map(({ label, href }) => (
                 <li key={label}>
                   <Link
                     href={href}
@@ -90,9 +79,9 @@ export function Footer() {
 
           {/* Subscribe */}
           <div className="space-y-4">
-            <h4 className="font-semibold">เข้าร่วมกับเรา!</h4>
+            <h4 className="font-semibold">{subscribe.heading}</h4>
             <p className="text-sm text-white/60 leading-relaxed">
-              รับข่าวสารและบทความใหม่ล่าสุดก่อนใคร สมัครได้เลยฟรี
+              {subscribe.description}
             </p>
             <SubscribeForm />
           </div>
@@ -102,7 +91,7 @@ export function Footer() {
         <Separator className="my-6 bg-white/10" />
 
         <p className="text-center text-xs text-white/40">
-          &copy; {new Date().getFullYear()} SystemBlog | Powered by SystemBlog
+          &copy; {new Date().getFullYear()} {copyright}
         </p>
 
       </div>
