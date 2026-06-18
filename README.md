@@ -25,6 +25,6 @@
 ## Deploy
 
 1. Push code ขึ้น GitHub
-2. Import project บน [Vercel](https://vercel.com)
+2. Import project บน [systemblog](https://systemblog-two.vercel.app/)
 3. ตั้ง Environment Variables ทั้ง 4 ตัวใน Vercel Dashboard → Settings → Environment Variables
 4. Deploy
